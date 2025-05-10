@@ -10,7 +10,7 @@ if (!isset($_SESSION['user'])) {
 $user_id = $_SESSION['user']['id'];
 $peminjaman_id = intval($_GET['id']);
 
-// Cek apakah buku milik user
+
 $cek = mysqli_query($koneksi, "SELECT * FROM peminjaman WHERE id = $peminjaman_id AND user_id = $user_id");
 $data = mysqli_fetch_assoc($cek);
 

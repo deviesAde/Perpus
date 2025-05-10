@@ -7,7 +7,7 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
     exit;
 }
 
-// Jika form disubmit
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $judul = mysqli_real_escape_string($koneksi, $_POST['judul']);
     $pengarang = mysqli_real_escape_string($koneksi, $_POST['pengarang']);
@@ -201,7 +201,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div id="notification" class="notification"></div>
 
     <script>
-        // Form validation
+       
         document.getElementById('bookForm').addEventListener('submit', function(e) {
             const tahunInput = document.getElementById('tahun');
             const currentYear = new Date().getFullYear();
@@ -220,7 +220,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         });
         
-        // Show notification function
+       
         function showNotification(message, type) {
             const notification = document.getElementById('notification');
             notification.textContent = message;

@@ -7,11 +7,7 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role'] != 'admin') {
 
 include 'config/koneksi.php';
 
-$query_pengembalian = "SELECT peminjaman.*, books.judul, users.nama 
-                       FROM peminjaman 
-                       JOIN books ON peminjaman.book_id = books.id 
-                       JOIN users ON peminjaman.user_id = users.id 
-                       WHERE peminjaman.status = 'Proses Pengembalian'";
+
 ?>
 
 <!DOCTYPE html>
@@ -168,6 +164,11 @@ $query_pengembalian = "SELECT peminjaman.*, books.judul, users.nama
             </thead>
             <tbody>
                 <?php
+                $query_pengembalian = "SELECT peminjaman.*, books.judul, users.nama 
+                FROM peminjaman 
+                JOIN books ON peminjaman.book_id = books.id 
+                JOIN users ON peminjaman.user_id = users.id 
+                WHERE peminjaman.status = 'Proses Pengembalian'";
                 $result_pengembalian = mysqli_query($koneksi, $query_pengembalian);
                 while ($pengembalian = mysqli_fetch_assoc($result_pengembalian)): ?>
                     <tr>

@@ -194,7 +194,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div id="notification" class="notification"></div>
 
     <script>
-        // Form validation
+ 
         document.getElementById('userForm').addEventListener('submit', function(e) {
             const passwordInput = document.getElementById('password');
             if (passwordInput.value.length < 6) {
@@ -204,7 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         });
 
-        // Show notification function
+    
         function showNotification(message, type) {
             const notification = document.getElementById('notification');
             notification.textContent = message;
@@ -215,7 +215,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }, 3000);
         }
 
-        // Check for session alert and show notification
+       
         <?php if (isset($_SESSION['alert'])): ?>
             window.onload = function() {
                 showNotification(

@@ -10,7 +10,7 @@ if (!isset($_SESSION['user'])) {
 $user_id = $_SESSION['user']['id'];
 $peminjaman_id = intval($_GET['id']);
 
-// Cek apakah user adalah admin
+
 $is_admin = $_SESSION['user']['role'] === 'admin';
 
 $cek = mysqli_query($koneksi, "SELECT * FROM peminjaman WHERE id = $peminjaman_id");

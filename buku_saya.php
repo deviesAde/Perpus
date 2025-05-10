@@ -1,7 +1,7 @@
 <?php
 session_start();
 include 'config/koneksi.php';
-include 'hitungdenda.php'; // Sertakan file hitungdenda.php
+include 'hitungdenda.php'; 
 
 if (!isset($_SESSION['user'])) {
     header("Location: login.php");
@@ -10,7 +10,7 @@ if (!isset($_SESSION['user'])) {
 
 $user_id = $_SESSION['user']['id'];
 
-// Query untuk mengambil data buku yang dipinjam oleh user
+
 $query = "SELECT peminjaman.*, books.judul 
           FROM peminjaman 
           JOIN books ON peminjaman.book_id = books.id 
@@ -18,7 +18,8 @@ $query = "SELECT peminjaman.*, books.judul
           ORDER BY peminjaman.tgl_pinjam DESC";
 $result = mysqli_query($koneksi, $query);
 
-// Periksa dan hitung denda jika ada keterlambatan
+
+
 while ($row = mysqli_fetch_assoc($result)) {
     $denda = 0;
 
@@ -26,17 +27,19 @@ while ($row = mysqli_fetch_assoc($result)) {
         $tglKembali = new DateTime($row['tgl_kembali']);
         $today = new DateTime();
 
-        // Hitung denda jika terlambat
         if ($today > $tglKembali) {
             $denda = hitungDenda($today->format('Y-m-d'), $tglKembali->format('Y-m-d'));
 
-            // Perbarui status dan denda di database
             $update_query = "UPDATE peminjaman SET status = 'Terlambat', denda = $denda WHERE id = {$row['id']}";
             mysqli_query($koneksi, $update_query);
         }
     }
 }
+
+
+$result = mysqli_query($koneksi, $query);
 ?>
+
 <?php if (isset($_SESSION['alert'])): ?>
     <div class="alert alert-<?= $_SESSION['alert']['type'] ?>">
         <?= $_SESSION['alert']['message'] ?>
@@ -54,7 +57,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- Sidebar -->
+
         <div class="sidebar">
             <div class="sidebar-header">
                 <h2>Perpustakaan</h2>
@@ -141,34 +144,29 @@ while ($row = mysqli_fetch_assoc($result)) {
                                 <td class="<?= $row['denda'] > 0 ? 'denda-text' : '' ?>">
                                     Rp <?= number_format($row['denda'], 0, ',', '.') ?>
                                 </td>
-                                <td>
-                                    <?php if ($row['status'] == 'Dipinjam' || $row['status'] == 'Terlambat'): ?>
-                                        <?php if ($row['perpanjangan'] < 2): ?>
-                                            <a class="btn btn-primary" href="perpanjang.php?id=<?= $row['id'] ?>" onclick="return confirm('Yakin ingin memperpanjang peminjaman buku ini?')">
-                                                <i class="fas fa-clock"></i> Perpanjang
-                                            </a>
-                                        <?php else: ?>
-                                            <span class="text-muted">Maksimal Perpanjangan</span>
-                                        <?php endif; ?>
-                                        <?php if ($row['denda'] > 0): ?>
-                                            <a class="btn btn-warning" href="pembayaran.php?id=<?= $row['id'] ?>">
-                                                <i class="fas fa-money-bill"></i> Bayar Denda
-                                            </a>
-                                        <?php else: ?>
-                                            <a class="btn btn-primary" href="ajukan_pengembalian.php?id=<?= $row['id'] ?>" onclick="return confirm('Yakin ingin mengajukan pengembalian buku ini?')">
-                                                <i class="fas fa-undo"></i> Ajukan Pengembalian
-                                            </a>
-                                        <?php endif; ?>
-                                    <?php elseif ($row['status'] == 'Lunas'): ?>
-                                        <a class="btn btn-primary" href="ajukan_pengembalian.php?id=<?= $row['id'] ?>" onclick="return confirm('Yakin ingin mengajukan pengembalian buku ini?')">
-                                            <i class="fas fa-undo"></i> Ajukan Pengembalian
-                                        </a>
-                                    <?php elseif ($row['status'] == 'Menunggu Konfirmasi'): ?>
-                                        <span class="text-warning">Menunggu Konfirmasi Admin</span>
-                                    <?php else: ?>
-                                        <span class="text-muted">Selesai</span>
-                                    <?php endif; ?>
-                                </td>
+                               <td>
+    <?php if ($row['status'] == 'Dipinjam'): ?>
+        <?php if ($row['perpanjangan'] < 2): ?>
+            <a class="btn btn-primary" href="perpanjang.php?id=<?= $row['id'] ?>" onclick="return confirm('Yakin ingin memperpanjang peminjaman buku ini?')">
+                <i class="fas fa-clock"></i> Perpanjang
+            </a>
+        <?php else: ?>
+            <span class="text-muted">Maksimal Perpanjangan</span>
+        <?php endif; ?>
+    <?php elseif ($row['status'] == 'Terlambat'): ?>
+        <span class="text-danger">Tidak dapat diperpanjang (Terlambat)</span>
+    <?php elseif ($row['status'] == 'Lunas'): ?>
+        <a class="btn btn-primary" href="ajukan_pengembalian.php?id=<?= $row['id'] ?>" onclick="return confirm('Yakin ingin mengajukan pengembalian buku ini?')">
+            <i class="fas fa-undo"></i> Ajukan Pengembalian
+        </a>
+    <?php endif; ?>
+
+    <?php if ($row['denda'] > 0): ?>
+        <a class="btn btn-warning" href="pembayaran.php?id=<?= $row['id'] ?>">
+            <i class="fas fa-money-bill"></i> Bayar Denda
+        </a>
+    <?php endif; ?>
+</td>
                             </tr>
                             <?php endwhile; ?>
                         </tbody>

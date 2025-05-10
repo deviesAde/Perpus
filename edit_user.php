@@ -202,7 +202,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div id="notification" class="notification"></div>
 
     <script>
-        // Show notification function
+       
         function showNotification(message, type) {
             const notification = document.getElementById('notification');
             notification.textContent = message;
@@ -210,10 +210,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             setTimeout(() => {
                 notification.classList.remove('show');
-            }, 3000);
+            }, 1000);
         }
 
-        // Check for session alert and show notification
+        
         <?php if (isset($_SESSION['alert'])): ?>
             window.onload = function() {
                 showNotification(
